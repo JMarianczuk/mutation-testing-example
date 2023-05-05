@@ -19,17 +19,7 @@ namespace MutationTestingExample.Test
         }
 
         [Fact]
-        public void StehenTest()
-        {
-            // ARRANGE
-            var fahrrad = Setup();
-
-            // ASSERT
-            fahrrad.AktuelleGeschwindigkeit.Should().Be(Speed.Zero);
-        }
-
-        [Fact]
-        public void LosfahreTest()
+        public void LosfahrenTest()
         {
             // ARRANGE
             var fahrrad = Setup();
@@ -39,6 +29,49 @@ namespace MutationTestingExample.Test
 
             // ASSERT
             fahrrad.AktuelleGeschwindigkeit.Should().BeGreaterThan(Speed.Zero);
+        }
+
+        [Fact]
+        public void BremsenTest()
+        {
+            // ARRANGE
+            var fahrrad = Setup();
+
+            // ACT
+            fahrrad.Losfahren();
+            fahrrad.Bremsen();
+
+            // ASSERT
+            fahrrad.AktuelleGeschwindigkeit.Should().Be(Speed.Zero);
+        }
+
+        [Fact]
+        public void HöheTest()
+        {
+            // ARRANGE
+            var fahrrad = Setup(
+                gestellHöhe: Length.FromMeters(1),
+                lenkerHöhe: Length.FromMeters(0.1),
+                maximaleSattelHöhe: Length.FromMeters(0.5));
+
+            // ACT
+            fahrrad.SattelEinstellen(Length.FromMeters(0.3));
+
+            // ASSERT
+            fahrrad.Gesamthöhe.Meters.Should().BeApproximately(Length.FromMeters(1.3).Meters, 0.01d);
+        }
+
+        [Fact]
+        public void SchaltenTest()
+        {
+            // ARRANGE
+            var fahrrad = Setup(anzahlGänge: 7);
+
+            // ACT
+            fahrrad.Hochschalten();
+
+            // ASSERT
+            fahrrad.AktuellerGang.Should().Be(2);
         }
     }
 }
