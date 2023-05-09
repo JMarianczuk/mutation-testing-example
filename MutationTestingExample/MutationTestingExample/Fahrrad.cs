@@ -1,9 +1,12 @@
-﻿using UnitsNet;
+﻿using Bluehands.Diagnostics.LogExtensions;
+using UnitsNet;
 
 namespace MutationTestingExample
 {
     public class Fahrrad : IFahrrad
     {
+        private static readonly Log Log = Log.For<Fahrrad>();
+
         private readonly Speed geschwindigkeitProGang;
         private readonly Length gestellHöhe;
         private readonly Length lenkerHöhe;
@@ -71,11 +74,13 @@ namespace MutationTestingExample
 
         public void Bremsen()
         {
+            Log.Info("Bremsen");
             this.istAmFahren = false;
         }
 
         public void Losfahren()
         {
+            Log.Info("Losfahren");
             this.istAmFahren = true;
         }
 
@@ -83,6 +88,7 @@ namespace MutationTestingExample
         {
             if (höhe < Length.Zero || höhe > this.maximaleSattelHöhe)
             {
+                Log.Warning("Ungültige Sattelhöhe");
                 return;
             }
 
