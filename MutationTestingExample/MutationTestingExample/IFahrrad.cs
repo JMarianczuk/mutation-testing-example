@@ -1,6 +1,4 @@
-﻿using UnitsNet;
-
-namespace MutationTestingExample;
+﻿namespace MutationTestingExample;
 
 public interface IFahrrad
 {

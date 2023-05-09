@@ -1,98 +1,94 @@
-﻿using Bluehands.Diagnostics.LogExtensions;
-using UnitsNet;
+﻿namespace MutationTestingExample;
 
-namespace MutationTestingExample
+public class Fahrrad : IFahrrad
 {
-    public class Fahrrad : IFahrrad
+    private static readonly Log Log = Log.For<Fahrrad>();
+
+    private readonly Speed geschwindigkeitProGang;
+    private readonly Length gestellHöhe;
+    private readonly Length lenkerHöhe;
+    private readonly Length maximaleSattelHöhe;
+
+    private bool istAmFahren = false;
+
+    public Fahrrad(Speed geschwindigkeitProGang, Length gestellHöhe, Length lenkerHöhe, Length maximaleSattelHöhe)
     {
-        private static readonly Log Log = Log.For<Fahrrad>();
+        this.geschwindigkeitProGang = geschwindigkeitProGang;
+        this.gestellHöhe = gestellHöhe;
+        this.lenkerHöhe = lenkerHöhe;
+        this.maximaleSattelHöhe = maximaleSattelHöhe;
+    }
 
-        private readonly Speed geschwindigkeitProGang;
-        private readonly Length gestellHöhe;
-        private readonly Length lenkerHöhe;
-        private readonly Length maximaleSattelHöhe;
+    public Length SattelHöhe { get; private set; }
 
-        private bool istAmFahren = false;
-
-        public Fahrrad(Speed geschwindigkeitProGang, Length gestellHöhe, Length lenkerHöhe, Length maximaleSattelHöhe)
+    public Length Gesamthöhe
+    {
+        get
         {
-            this.geschwindigkeitProGang = geschwindigkeitProGang;
-            this.gestellHöhe = gestellHöhe;
-            this.lenkerHöhe = lenkerHöhe;
-            this.maximaleSattelHöhe = maximaleSattelHöhe;
-        }
-
-        public Length SattelHöhe { get; private set; }
-
-        public Length Gesamthöhe
-        {
-            get
+            if (this.SattelHöhe < this.lenkerHöhe)
             {
-                if (this.SattelHöhe < this.lenkerHöhe)
-                {
-                    return this.gestellHöhe + this.lenkerHöhe;
-                }
-                else
-                {
-                    return this.gestellHöhe + this.SattelHöhe;
-                }
+                return this.gestellHöhe + this.lenkerHöhe;
+            }
+            else
+            {
+                return this.gestellHöhe + this.SattelHöhe;
             }
         }
-        public required int AnzahlGänge { get; init; }
-        public int AktuellerGang { get; private set; } = 1;
+    }
+    public required int AnzahlGänge { get; init; }
+    public int AktuellerGang { get; private set; } = 1;
 
-        public void Hochschalten()
+    public void Hochschalten()
+    {
+        if (this.AktuellerGang < this.AnzahlGänge)
         {
-            if (this.AktuellerGang < this.AnzahlGänge)
+            this.AktuellerGang += 1;
+        }
+    }
+
+    public void Runterschalten()
+    {
+        if (this.AktuellerGang > 1)
+        {
+            this.AktuellerGang -= 1;
+        }
+    }
+
+    public Speed AktuelleGeschwindigkeit
+    {
+        get
+        {
+            if (this.istAmFahren)
             {
-                this.AktuellerGang += 1;
+                return this.geschwindigkeitProGang * this.AktuellerGang;
+            }
+            else
+            {
+                return Speed.Zero;
             }
         }
+    }
 
-        public void Runterschalten()
+    public void Bremsen()
+    {
+        Log.Info("Bremsen");
+        this.istAmFahren = false;
+    }
+
+    public void Losfahren()
+    {
+        Log.Info("Losfahren");
+        this.istAmFahren = true;
+    }
+
+    public void SattelEinstellen(Length höhe)
+    {
+        if (höhe < Length.Zero || höhe > this.maximaleSattelHöhe)
         {
-            if (this.AktuellerGang > 1)
-            {
-                this.AktuellerGang -= 1;
-            }
+            Log.Warning("Ungültige Sattelhöhe");
+            return;
         }
 
-        public Speed AktuelleGeschwindigkeit
-        {
-            get
-            {
-                if (this.istAmFahren)
-                {
-                    return this.geschwindigkeitProGang * this.AktuellerGang;
-                }
-                else
-                {
-                    return Speed.Zero;
-                }
-            }
-        }
-
-        public void Bremsen()
-        {
-            Log.Info("Bremsen");
-            this.istAmFahren = false;
-        }
-
-        public void Losfahren()
-        {
-            Log.Info("Losfahren");
-            this.istAmFahren = true;
-        }
-
-        public void SattelEinstellen(Length höhe)
-        {
-            if (höhe < Length.Zero || höhe > this.maximaleSattelHöhe)
-            {
-                Log.Warning("Ungültige Sattelhöhe");
-                return;
-            }
-
-            this.SattelHöhe = höhe;
-        }
+        this.SattelHöhe = höhe;
     }
 }
