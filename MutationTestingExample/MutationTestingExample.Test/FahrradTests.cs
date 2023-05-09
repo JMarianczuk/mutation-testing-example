@@ -1,20 +1,24 @@
-using FluentAssertions;
+ï»¿using FluentAssertions;
 using UnitsNet;
 
 namespace MutationTestingExample.Test
 {
     public class FahrradTests
     {
-        private IFahrrad Setup(Speed? geschwindigkeitProGang = null, Length? gestellHöhe = null,
-            Length? lenkerHöhe = null, Length? maximaleSattelHöhe = null, int anzahlGänge = 7)
+        private IFahrrad Setup(
+            Speed? geschwindigkeitProGang = null,
+            Length? gestellHÃ¶he = null,
+            Length? lenkerHÃ¶he = null,
+            Length? maximaleSattelHÃ¶he = null,
+            int anzahlGÃ¤nge = 7)
         {
             return new Fahrrad(
                 geschwindigkeitProGang ?? Speed.FromMetersPerSecond(1),
-                gestellHöhe ?? Length.FromMeters(1),
-                lenkerHöhe ?? Length.FromCentimeters(20),
-                maximaleSattelHöhe ?? Length.FromCentimeters(60))
+                gestellHÃ¶he ?? Length.FromMeters(1),
+                lenkerHÃ¶he ?? Length.FromCentimeters(20),
+                maximaleSattelHÃ¶he ?? Length.FromCentimeters(60))
             {
-                AnzahlGänge = anzahlGänge,
+                AnzahlGÃ¤nge = anzahlGÃ¤nge,
             };
         }
 
@@ -46,26 +50,26 @@ namespace MutationTestingExample.Test
         }
 
         [Fact]
-        public void HöheTest()
+        public void HÃ¶heTest()
         {
             // ARRANGE
             var fahrrad = Setup(
-                gestellHöhe: Length.FromMeters(1),
-                lenkerHöhe: Length.FromMeters(0.1),
-                maximaleSattelHöhe: Length.FromMeters(0.5));
+                gestellHÃ¶he: Length.FromMeters(1),
+                lenkerHÃ¶he: Length.FromMeters(0.1),
+                maximaleSattelHÃ¶he: Length.FromMeters(0.5));
 
             // ACT
             fahrrad.SattelEinstellen(Length.FromMeters(0.3));
 
             // ASSERT
-            fahrrad.Gesamthöhe.Meters.Should().BeApproximately(Length.FromMeters(1.3).Meters, 0.01d);
+            fahrrad.GesamthÃ¶he.Meters.Should().BeApproximately(Length.FromMeters(1.3).Meters, 0.01d);
         }
 
         [Fact]
         public void SchaltenTest()
         {
             // ARRANGE
-            var fahrrad = Setup(anzahlGänge: 7);
+            var fahrrad = Setup(anzahlGÃ¤nge: 7);
 
             // ACT
             fahrrad.Hochschalten();
